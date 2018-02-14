@@ -22,11 +22,29 @@ public class Name {
      * @throws IllegalValueException if given name string is invalid.
      */
     public Name(String name) throws IllegalValueException {
-        String trimmedName = name.trim();
-        if (!isValidName(trimmedName)) {
+        String capitalizedName = capitalizeFirstCharForEveryWord(name.trim());
+        if (!isValidName(capitalizedName)) {
             throw new IllegalValueException(MESSAGE_NAME_CONSTRAINTS);
         }
-        this.fullName = trimmedName;
+        this.fullName = capitalizedName;
+    }
+
+    /**
+     * Format name before adding into address book
+     * (Capitalize first character of every word in name & the rest in lower case)
+     *
+     * @param name string argument
+     * @return formatted name argument
+     */
+    private static String capitalizeFirstCharForEveryWord(String name) {
+        String[] partOfName = name.split("\\s+");
+        String fullName = "";
+        for(String word : partOfName){
+            if(word.length() > 0) {
+                fullName += word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase() + " ";
+            }
+        }
+        return fullName.trim();
     }
 
     /**
