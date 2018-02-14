@@ -25,24 +25,7 @@ public class FindCommand extends Command {
     private final Set<String> keywords;
 
     public FindCommand(Set<String> keywords) {
-        this.keywords = capitalizeFirstCharForEveryKeyword(keywords);
-    }
-
-    /**
-     * Format keywords
-     * (Capitalize first character of every keyword & the other characters in lower case)
-     *
-     * @param k set of keywords
-     * @return a set of formatted keywords
-     */
-    private static Set<String> capitalizeFirstCharForEveryKeyword(Set<String> k) {
-        String[] keywords = k.toArray(new String[k.size()]);
-        for(int i = 0; i < keywords.length; i++) {
-            if(keywords[i].length() > 0) {
-                keywords[i] = keywords[i].substring(0, 1).toUpperCase() + keywords[i].substring(1).toLowerCase();
-            }
-        }
-        return new HashSet<>(Arrays.asList(keywords));
+        this.keywords = keywords;
     }
 
     /**
@@ -66,13 +49,31 @@ public class FindCommand extends Command {
      */
     private List<ReadOnlyPerson> getPersonsWithNameContainingAnyKeyword(Set<String> keywords) {
         final List<ReadOnlyPerson> matchedPersons = new ArrayList<>();
+        Set<String> formattedKeywords = capitalizeFirstCharForEveryKeyword(keywords);
         for (ReadOnlyPerson person : addressBook.getAllPersons()) {
             final Set<String> wordsInName = new HashSet<>(person.getName().getWordsInName());
-            if (!Collections.disjoint(wordsInName, keywords)) {
+            if (!Collections.disjoint(wordsInName, formattedKeywords)) {
                 matchedPersons.add(person);
             }
         }
         return matchedPersons;
+    }
+
+    /**
+     * Format keywords
+     * (Capitalize first character of every keyword & the other characters in lower case)
+     *
+     * @param keywords set of keywords
+     * @return a set of formatted keywords
+     */
+    private static Set<String> capitalizeFirstCharForEveryKeyword(Set<String> keywords) {
+        Set<String> formattedKeywords = new HashSet<>();
+        for(String key : keywords){
+            if(key.length() > 0 ){
+                formattedKeywords.add(key.substring(0,1).toUpperCase() + key.substring(1).toLowerCase());
+            }
+        }
+        return formattedKeywords;
     }
 
 }
